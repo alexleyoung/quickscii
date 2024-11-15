@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -11,6 +10,5 @@ func main() {
 		panic(err)
 	}
 	out :=Convert(img)
-	fmt.Println(out)
 	os.WriteFile("ascii.txt", []byte(out), 0644)
 }
