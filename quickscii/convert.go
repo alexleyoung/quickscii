@@ -1,4 +1,4 @@
-package main
+package quickscii
 
 import (
 	"gocv.io/x/gocv"
