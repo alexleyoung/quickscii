@@ -4,6 +4,9 @@ import (
 	"gocv.io/x/gocv"
 )
 
+// Asciify converts a grayscale image to ascii art
+// INPUT: grayscale opencv matrix
+// OUTPUT: string of ascii art
 func Asciify(mat *gocv.Mat) string {
 	ascii := []rune{'@', '#', '8', '&', '%', '$', '?', '*', '+', ';', ':', ',', '.'}
 	out := ""

@@ -9,6 +9,8 @@ import (
 )
 
 // Resizes image to given width and height and converts to grayscale
+// INPUT: path to image, width, height
+// OUTPUT: grayscale opencv matrix
 func PreProcess(path string, width int, height int) (*gocv.Mat, error) {
 	img := gocv.IMRead(path, gocv.IMReadColor)
 
