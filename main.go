@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	img, err := quickscii.PreProcess("/Users/alexyoung/downloads/monalisa.jpg", 70, 40)
+	img, err := quickscii.PreProcess("/Users/alexyoung/downloads/monalisa.jpg", 140, 70)
 	if err != nil {
 		panic(err)
 	}
