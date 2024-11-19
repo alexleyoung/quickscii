@@ -8,7 +8,8 @@ import (
 // INPUT: grayscale opencv matrix
 // OUTPUT: string of ascii art
 func Asciify(mat *gocv.Mat) string {
-	ascii := []rune{'@', '#', '8', '&', '%', '$', '?', '*', '+', ';', ':', ',', '.'}
+	
+	ascii := []rune{'█', '▇', '▆', '▅', '▄', '▃', '▂', '▁', '░', '▒', '▓', '▤', '▥', '▪'}
 	out := ""
 
 	for i := 0; i < mat.Rows(); i++ {
