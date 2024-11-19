@@ -9,7 +9,7 @@ import (
 // OUTPUT: string of ascii art
 func Asciify(mat *gocv.Mat) string {
 	
-	ascii := []rune{'█', '▇', '▆', '▅', '▄', '▃', '▂', '▁', '░', '▒', '▓', '▤', '▥', '▪'}
+	ascii := []rune{'▪', '▦', '▥', '▤', '▓', '▒', '░', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
 	out := ""
 
 	for i := 0; i < mat.Rows(); i++ {
