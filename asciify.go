@@ -111,40 +111,72 @@ func Asciify(path string, w, l int, charset string) (string, error) {
 // Returns:
 //   - error: Error if conversion fails
 func AsciifyToImage(inputPath, outputPath string, w, l int, charset string) error {
-	// Get ASCII art string
+	// Create a new image context
+	// Calculate dimensions based on font metrics
+	const fontsize = 12
+	
+	dc := gg.NewContext(1, 1) // Temporary context to measure text
+	fonts := []string{
+		"/System/Library/Fonts/Monaco.ttf",
+		"/System/Library/Fonts/Menlo.ttf",
+		"/Library/Fonts/Courier New.ttf",
+		"/Library/Fonts/Courier New Bold.ttf",
+	}
+
+	fontLoaded := false
+	for _, font := range fonts {
+		if err := dc.LoadFontFace(font, fontsize); err == nil {
+			fontLoaded = true
+			break
+		}
+	}
+
+	if !fontLoaded {
+		return fmt.Errorf("failed to load any monospace font")
+	}
+
+	// Get the ASCII art to measure dimensions
 	ascii, err := Asciify(inputPath, w, l, charset)
 	if err != nil {
 		return fmt.Errorf("failed to generate ASCII art: %v", err)
 	}
 
-	// Create a new image context
-	// We'll make the image larger to accommodate the text
-	const fontsize = 12
-	const padding = 20
-	imgWidth := float64(w * fontsize)
-	imgHeight := float64(l * fontsize)
+	lines := strings.Split(ascii, "\n")
+	if len(lines) == 0 {
+		return fmt.Errorf("no ASCII content generated")
+	}
+
+	// Measure the exact width and height needed
+	width, _ := dc.MeasureString(lines[0])
+	height := float64(len(lines)) * fontsize
+
+	// Create the final context with exact dimensions
+	dc = gg.NewContext(int(width), int(height))
 	
-	dc := gg.NewContext(int(imgWidth + 2*padding), int(imgHeight + 2*padding))
-	
-	// Set white background
-	dc.SetColor(color.White)
+	// Set black background
+	dc.SetColor(color.Black)
 	dc.Clear()
 	
-	// Set text properties
-	if err := dc.LoadFontFace("Go-Mono", fontsize); err != nil {
-		// Fallback to a basic monospace font if Go-Mono is not available
-		if err := dc.LoadFontFace("Courier", fontsize); err != nil {
-			return fmt.Errorf("failed to load font: %v", err)
+	// Load the font again for the new context
+	fontLoaded = false
+	for _, font := range fonts {
+		if err := dc.LoadFontFace(font, fontsize); err == nil {
+			fontLoaded = true
+			break
 		}
 	}
+
+	if !fontLoaded {
+		return fmt.Errorf("failed to load any monospace font")
+	}
 	
-	dc.SetColor(color.Black)
+	// Set white text color
+	dc.SetColor(color.White)
 	
 	// Draw the ASCII art
-	lines := strings.Split(ascii, "\n")
 	for i, line := range lines {
-		y := float64(i)*fontsize + padding
-		dc.DrawString(line, padding, y)
+		y := float64(i)*fontsize + fontsize // Add fontsize to y to account for baseline
+		dc.DrawString(line, 0, y)
 	}
 	
 	// Save the image
