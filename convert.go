@@ -7,21 +7,25 @@ import (
 	"gocv.io/x/gocv"
 )
 
-// Convert image to ASCII art string
-// path: path to the image file
-// w: width of the output ASCII art
-// l: height of the output ASCII art
-// charset: character set to use
-//     - "block": block characters
-//     - "poly": polygon characters
-//     - "mix": text/blocks characters
-// returns: ASCII art string, error
+// Convert converts an image file into ASCII art.
+//
+// Parameters:
+//   - path: Path to the image file
+//   - w: Width of the output ASCII art
+//   - l: Height of the output ASCII art
+//   - charset: Character set to use for conversion:
+//     • "block": Block characters (█▀▄)
+//     • "poly": Polygon characters (◢◣◤◥)
+//     • "mix": Mixed text and block characters
+//
+// Returns:
+//   - string: The generated ASCII art
+//   - error: Error if conversion fails
 func Convert(path string, w, l int, charset string) (string, error) {
 	// SECTION 1: Image Preprocessing
 	// Read and validate the image
 	if path == "" {
-		return "", fmt.Errorf("invalid path: path cannot be empty")
-	}
+		return "", fmt.Errorf("invalid path: path cannot be empty") }
 	if w <= 0 || l <= 0 {
 		return "", fmt.Errorf("invalid dimensions: width and height must be positive")
 	}
