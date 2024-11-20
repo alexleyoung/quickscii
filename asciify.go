@@ -3,29 +3,34 @@ package quickscii
 import (
 	"fmt"
 	"image"
+	"image/color"
+	"strings"
 
+	"github.com/fogleman/gg"
 	"gocv.io/x/gocv"
 )
 
-// Convert converts an image file into ASCII art.
+// Asciify converts an image file into ASCII art.
 //
 // Parameters:
 //   - path: Path to the image file
 //   - w: Width of the output ASCII art
 //   - l: Height of the output ASCII art
 //   - charset: Character set to use for conversion:
-//     • "block": Block characters (█▀▄)
-//     • "poly": Polygon characters (◢◣◤◥)
-//     • "mix": Mixed text and block characters
+//        • "block": Block characters (█▀▄)
+//        • "poly": Polygon characters (◢◣◤◥)
+//        • "mix": Mixed text and block characters
 //
 // Returns:
 //   - string: The generated ASCII art
 //   - error: Error if conversion fails
-func Convert(path string, w, l int, charset string) (string, error) {
+func Asciify(path string, w, l int, charset string) (string, error) {
 	// SECTION 1: Image Preprocessing
 	// Read and validate the image
 	if path == "" {
-		return "", fmt.Errorf("invalid path: path cannot be empty") }
+		return "", fmt.Errorf("invalid path: path cannot be empty")
+	}
+
 	if w <= 0 || l <= 0 {
 		return "", fmt.Errorf("invalid dimensions: width and height must be positive")
 	}
@@ -89,4 +94,63 @@ func Convert(path string, w, l int, charset string) (string, error) {
 	}
 
 	return out, nil
+}
+
+// AsciifyToImage converts an image file into ASCII art and saves it as a PNG image.
+//
+// Parameters:
+//   - inputPath: Path to the input image file
+//   - outputPath: Path where the ASCII art image will be saved
+//   - w: Width of the output ASCII art
+//   - l: Height of the output ASCII art
+//   - charset: Character set to use for conversion:
+//        • "block": Block characters (█▀▄)
+//        • "poly": Polygon characters (◢◣◤◥)
+//        • "mix": Mixed text and block characters
+//
+// Returns:
+//   - error: Error if conversion fails
+func AsciifyToImage(inputPath, outputPath string, w, l int, charset string) error {
+	// Get ASCII art string
+	ascii, err := Asciify(inputPath, w, l, charset)
+	if err != nil {
+		return fmt.Errorf("failed to generate ASCII art: %v", err)
+	}
+
+	// Create a new image context
+	// We'll make the image larger to accommodate the text
+	const fontsize = 12
+	const padding = 20
+	imgWidth := float64(w * fontsize)
+	imgHeight := float64(l * fontsize)
+	
+	dc := gg.NewContext(int(imgWidth + 2*padding), int(imgHeight + 2*padding))
+	
+	// Set white background
+	dc.SetColor(color.White)
+	dc.Clear()
+	
+	// Set text properties
+	if err := dc.LoadFontFace("Go-Mono", fontsize); err != nil {
+		// Fallback to a basic monospace font if Go-Mono is not available
+		if err := dc.LoadFontFace("Courier", fontsize); err != nil {
+			return fmt.Errorf("failed to load font: %v", err)
+		}
+	}
+	
+	dc.SetColor(color.Black)
+	
+	// Draw the ASCII art
+	lines := strings.Split(ascii, "\n")
+	for i, line := range lines {
+		y := float64(i)*fontsize + padding
+		dc.DrawString(line, padding, y)
+	}
+	
+	// Save the image
+	if err := dc.SavePNG(outputPath); err != nil {
+		return fmt.Errorf("failed to save image: %v", err)
+	}
+	
+	return nil
 }
