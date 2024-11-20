@@ -7,11 +7,15 @@ import (
 	"gocv.io/x/gocv"
 )
 
-// Convert transforms an image into ASCII art through two main steps:
-// 1. Preprocessing - resizing and grayscale conversion
-// 2. ASCII conversion - mapping pixel values to ASCII characters
-// INPUT: path to image, width, height
-// OUTPUT: string of ascii art and error if any occurred
+// Convert image to ASCII art string
+// path: path to the image file
+// w: width of the output ASCII art
+// l: height of the output ASCII art
+// charset: character set to use
+//     - "block": block characters
+//     - "poly": polygon characters
+//     - "mix": text/blocks characters
+// returns: ASCII art string, error
 func Convert(path string, w, l int, charset string) (string, error) {
 	// SECTION 1: Image Preprocessing
 	// Read and validate the image
@@ -48,7 +52,7 @@ func Convert(path string, w, l int, charset string) (string, error) {
 	// Define ASCII characters for different intensity levels
 	block := []rune{'▪', '▦', '▥', '▤', '▓', '▒', '░', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
 	poly := []rune{'▫', '▧', '▨', '▥', '▲', '▱', '▯', '▰', '△', '▲', '△', '▲', '△', '▲', '△', '▲'}
-	text := []rune{' ', '.', ':', '-', '=', '+', '*', '#', '%', '@', '▁', '▂', '▃', '▄', '▅', '█'}
+	mix := []rune{' ', '.', ':', '-', '=', '+', '*', '#', '%', '@', '▁', '▂', '▃', '▄', '▅', '█'}
 
 	var selectedCharset []rune
 	switch charset {
@@ -56,8 +60,8 @@ func Convert(path string, w, l int, charset string) (string, error) {
 		selectedCharset = block
 	case "poly":
 		selectedCharset = poly
-	case "text":
-		selectedCharset = text
+	case "mix":
+		selectedCharset = mix
 	default:
 		return "", fmt.Errorf("invalid charset: %s", charset)
 	}
