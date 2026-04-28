@@ -13,7 +13,7 @@ func main() {
 	// Get the absolute path to the project root
 	_, filename, _, _ := runtime.Caller(0)
 	projectRoot := filepath.Join(filepath.Dir(filename), "../..")
-	
+
 	// Construct absolute paths
 	testImagePath := filepath.Join(projectRoot, "testdata", "nerd.jpg")
 	outputPath := filepath.Join(projectRoot, "output.png")
