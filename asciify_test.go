@@ -156,7 +156,7 @@ func TestAsciifyToImage(t *testing.T) {
 
 // TestCharsets tests ASCII art generation with different character sets
 func TestCharsets(t *testing.T) {
-	charsets := []string{"block", "poly", "mix"}
+	charsets := []string{"block", "poly", "text", "mix"}
 	
 	// Create a test image first
 	testImagePath := "testdata/test.png"

@@ -22,7 +22,7 @@ import (
 //   - charset: Character set to use for conversion:
 //        • "block": Block characters (█▀▄)
 //        • "poly": Polygon characters (◢◣◤◥)
-//        • "mix": Mixed text and block characters
+//        • "text" (alias "mix"): Mixed text and block characters
 //
 // Returns:
 //   - string: The generated ASCII art
@@ -38,7 +38,7 @@ func Asciify(path string, w, l int, charset string) (string, error) {
 
 	block := []rune{'▪', '▦', '▥', '▤', '▓', '▒', '░', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
 	poly := []rune{'▫', '▧', '▨', '▥', '▲', '▱', '▯', '▰', '△', '▲', '△', '▲', '△', '▲', '△', '▲'}
-	mix := []rune{' ', '.', ':', '-', '=', '+', '*', '#', '%', '@', '▁', '▂', '▃', '▄', '▅', '█'}
+	text := []rune{' ', '.', ':', '-', '=', '+', '*', '#', '%', '@', '▁', '▂', '▃', '▄', '▅', '█'}
 
 	var selectedCharset []rune
 	switch charset {
@@ -46,8 +46,8 @@ func Asciify(path string, w, l int, charset string) (string, error) {
 		selectedCharset = block
 	case "poly":
 		selectedCharset = poly
-	case "mix":
-		selectedCharset = mix
+	case "text", "mix":
+		selectedCharset = text
 	default:
 		return "", fmt.Errorf("invalid charset: %s", charset)
 	}
@@ -99,7 +99,7 @@ func Convert(path string, w, l int, charset string) (string, error) {
 //   - charset: Character set to use for conversion:
 //        • "block": Block characters (█▀▄)
 //        • "poly": Polygon characters (◢◣◤◥)
-//        • "mix": Mixed text and block characters
+//        • "text" (alias "mix"): Mixed text and block characters
 //
 // Returns:
 //   - error: Error if conversion fails
